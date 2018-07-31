@@ -12,8 +12,10 @@
         <div class="container">
             <h1>Books</h1>
             <p>This page contains all informations about books</p>
+            
         </div>
     </div>
+     <h3 th:text="${info}"></h3>
 </section>
 
 <section class="container">
@@ -31,12 +33,12 @@
                                class="btn btn-primary"> <span
                                     class="glyphicon-info-sign glyphicon"/></span> Details
                             </a>
-                            
-                            <a th:href="@{'/books/bookDelete?id='+${book.id}}"
+                           
+                            <a th:href="@{'/books/delete?id='+${book.id}}"
                                class="btn btn-primary"> <span
                                     class="glyphicon-remove-sign glyphicon"/></span> Delete
                             </a>
-                            
+                           
                         </p>
 
                     </div>
