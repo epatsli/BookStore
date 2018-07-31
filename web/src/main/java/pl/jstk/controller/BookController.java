@@ -42,7 +42,8 @@ public class BookController {
 	public String deleteBook(@RequestParam("id") Long id, Model model) {
 		bookService.deleteBook(id);
 		model.addAttribute(ModelConstants.INFO, "You remove book.");
-		// model.addAttribute("deleteBook", "Delete book");
+		model.addAttribute("deleteBook", "Delete book");
+		// return "deleteBook";
 		return showListBooks(model);
 	}
 
@@ -77,12 +78,12 @@ public class BookController {
 		} else {
 			books = bookService.findBookByAuthorOrTitle(book);
 		}
+
 		if (books.isEmpty()) {
 			model.addAttribute(ModelConstants.INFO, "Sorry, we don't have this book.");
 		}
 
 		model.addAttribute(ModelConstants.bookList, books);
-		// model.addAttribute("greetings", book);
 		return "books";
 	}
 
