@@ -1,6 +1,7 @@
 package pl.jstk.service.impl;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,5 +56,14 @@ public class BookServiceImpl implements BookService {
 
 	public BookTo findBookById(long id) {
 		return BookMapper.map(bookRepository.getOne(id));
+	}
+
+	public Set<BookTo> findBookByAuthorOrTitle(String author, String title) {
+		List<BookTo> bookTitle = findBooksByTitle(title);
+		List<BookTo> bookAuthor = findBooksByAuthor(author);
+		Set<BookTo> setBooks = null;
+		setBooks.addAll(bookTitle);
+		setBooks.addAll(bookAuthor);
+		return setBooks;
 	}
 }

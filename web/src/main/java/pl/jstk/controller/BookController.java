@@ -56,4 +56,11 @@ public class BookController {
 		bookService.saveBook(book);
 		return showListBooks(model);
 	}
+
+	@GetMapping("/searchbooks")
+	public String searchBook(Model model) {
+		model.addAttribute("searchBook", new BookTo());
+		return "searchbooks";
+	}
+
 }

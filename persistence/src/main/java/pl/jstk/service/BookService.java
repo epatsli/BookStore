@@ -1,6 +1,7 @@
 package pl.jstk.service;
 
 import java.util.List;
+import java.util.Set;
 
 import pl.jstk.to.BookTo;
 
@@ -17,4 +18,6 @@ public interface BookService {
 	void deleteBook(Long id);
 
 	BookTo findBookById(long id);
+
+	Set<BookTo> findBookByAuthorOrTitle(String author, String title);
 }
