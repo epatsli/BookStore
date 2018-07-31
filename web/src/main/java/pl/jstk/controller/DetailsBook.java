@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pl.jstk.constants.ModelConstants;
-import pl.jstk.service.impl.BookServiceImpl;
+import pl.jstk.service.BookService;
 import pl.jstk.to.BookTo;
 
 @Controller
@@ -16,12 +16,12 @@ import pl.jstk.to.BookTo;
 public class DetailsBook {
 
 	@Autowired
-	private BookServiceImpl bookService;
+	private BookService bookService;
 
-	@RequestMapping(value = "/book")
-	public BookTo showDetailsBook(Model model, @RequestParam("id") long id) {
+	@RequestMapping(value = "books/book")
+	public BookTo showDetailsBook(@RequestParam("id") long id, Model model) {
 		BookTo bookById = bookService.findBookById(id);
 		model.addAttribute(ModelConstants.bookid, bookById);
-		return bookService.findBookById(id);
+		return bookById;
 	}
 }
