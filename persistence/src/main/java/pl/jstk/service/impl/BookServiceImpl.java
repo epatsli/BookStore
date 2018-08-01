@@ -1,5 +1,6 @@
 package pl.jstk.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,7 +61,7 @@ public class BookServiceImpl implements BookService {
 
 	public List<BookTo> findBookByAuthorOrTitle(BookTo book) {
 
-		List<BookTo> listBooks = null;
+		List<BookTo> listBooks = new ArrayList<>();
 
 		if ((book.getAuthors() == "") && (book.getTitle() != "")) {
 			listBooks = findBooksByTitle(book.getTitle());
@@ -70,7 +71,7 @@ public class BookServiceImpl implements BookService {
 			listBooks = findAllBooks();
 		} else if ((book.getTitle() != "") && (book.getAuthors() != "")) {
 			listBooks = findBooksByTitle(book.getTitle());
-			listBooks = listBooks.stream().filter(b -> b.getAuthors() == (book.getAuthors()))
+			listBooks = listBooks.stream().filter(b -> b.getAuthors().contains(book.getAuthors()))
 					.collect(Collectors.toList());
 		}
 
