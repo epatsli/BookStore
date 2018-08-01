@@ -2,6 +2,8 @@ package pl.jstk.controller;
 
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,6 +40,7 @@ public class BookController {
 		return "book";
 	}
 
+	@RolesAllowed("ADMIN")
 	@DeleteMapping(value = "books/bookDelete")
 	public String deleteBook(@RequestParam("id") Long id, Model model) {
 		bookService.deleteBook(id);
