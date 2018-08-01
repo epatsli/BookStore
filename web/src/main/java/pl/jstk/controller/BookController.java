@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import pl.jstk.constants.ModelConstants;
@@ -24,7 +22,7 @@ public class BookController {
 	@Autowired
 	private BookServiceImpl bookService;
 
-	@RequestMapping(value = "/books", method = RequestMethod.GET)
+	@GetMapping(value = "/books")
 	public String showListBooks(Model model) {
 
 		List<BookTo> bookList = bookService.findAllBooks();
@@ -32,14 +30,16 @@ public class BookController {
 		return "books";
 	}
 
-	@RequestMapping(value = "books/{bookId}", method = RequestMethod.GET)
+	@GetMapping(value = "books/{bookId}")
 	public String showDetailsBook(@RequestParam("id") Long id, Model model) {
 		BookTo bookById = bookService.findBookById(id);
 		model.addAttribute("book", bookById);
 		return "book";
 	}
 
-	// @RolesAllowed('ADMIN')
+	// @RolesAllowed("ADMIN")
+	// @PreAuthorize("hasRole('ADMIN')")
+	// @Secured("ADMIN")
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping(value = "books/bookDelete")
 	public String deleteBook(@RequestParam("id") Long id, Model model) {

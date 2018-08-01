@@ -33,12 +33,13 @@
                                class="btn btn-primary"> <span
                                     class="glyphicon-info-sign glyphicon"/></span> Details
                             </a>
-                           
+                            
+                        
                          <form th:method="delete" th:action="@{/books/bookDelete}">
 									<input type="hidden" name="id" th:value="${book.id}" />
 									<button class="glyphicon glyphicon-remove-circle" type="submit">Delete</button>
 								</form>
-                        
+						
                         </p>
 
                     </div>

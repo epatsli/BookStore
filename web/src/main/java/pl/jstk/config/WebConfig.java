@@ -10,12 +10,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-// @EnableWebMvc
+@EnableWebMvc
 @EnableWebSecurity
 public class WebConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
@@ -43,8 +44,8 @@ public class WebConfig extends WebSecurityConfigurerAdapter implements WebMvcCon
 
 		httpSecurity.authorizeRequests().antMatchers("/admin/**").access("hasRole('ADMIN')").and().formLogin()
 				.loginPage("/login").failureUrl("/login?error").usernameParameter("username")
-				.passwordParameter("password").and().logout().logoutSuccessUrl("/login?logout").and()
-				.exceptionHandling().accessDeniedPage("/403");
+				.passwordParameter("password").and().exceptionHandling().accessDeniedPage("/403").and().logout()
+				.logoutSuccessUrl("/login?logout");
 
 		httpSecurity.csrf().disable();
 		httpSecurity.headers().frameOptions().disable();
