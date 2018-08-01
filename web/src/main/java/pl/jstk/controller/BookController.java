@@ -38,17 +38,15 @@ public class BookController {
 		return "book";
 	}
 
-	@DeleteMapping(value = "books/bookDelete/{bookId}")
+	@DeleteMapping(value = "books/bookDelete")
 	public String deleteBook(@RequestParam("id") Long id, Model model) {
 		bookService.deleteBook(id);
 		model.addAttribute(ModelConstants.INFO, "You remove book.");
-		model.addAttribute("deleteBook", "Delete book");
-		// return "deleteBook";
 		return showListBooks(model);
 	}
 
 	@GetMapping("/books/add")
-	public String addBook(Model model) {
+	public String addBookTemplate(Model model) {
 		model.addAttribute("newBook", new BookTo());
 		return "addBook";
 	}
@@ -61,23 +59,14 @@ public class BookController {
 	}
 
 	@GetMapping("/searchbooks")
-	public String searchBook(Model model) {
+	public String searchBookTemplate(Model model) {
 		model.addAttribute("searchBook", new BookTo());
 		return "searchbooks";
 	}
 
 	@PostMapping("/searchbooks")
 	public String searchBook(@ModelAttribute("searchBook") BookTo book, Model model) {
-		List<BookTo> books;
-		if ((book.getAuthors() == "") && (book.getTitle() != "")) {
-			books = bookService.findBooksByTitle(book.getTitle());
-		} else if ((book.getTitle() == "") && (book.getAuthors() != "")) {
-			books = bookService.findBooksByAuthor(book.getAuthors());
-		} else if ((book.getTitle() == "") && (book.getAuthors() == "")) {
-			books = bookService.findAllBooks();
-		} else {
-			books = bookService.findBookByAuthorOrTitle(book);
-		}
+		List<BookTo> books = bookService.findBookByAuthorOrTitle(book);
 
 		if (books.isEmpty()) {
 			model.addAttribute(ModelConstants.INFO, "Sorry, we don't have this book.");

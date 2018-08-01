@@ -1,6 +1,7 @@
 package pl.jstk.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,11 +59,21 @@ public class BookServiceImpl implements BookService {
 	}
 
 	public List<BookTo> findBookByAuthorOrTitle(BookTo book) {
-		List<BookTo> bookTitle = findBooksByTitle(book.getTitle());
-		List<BookTo> bookAuthor = findBooksByAuthor(book.getAuthors());
+
 		List<BookTo> listBooks = null;
-		listBooks.addAll(bookTitle);
-		listBooks.addAll(bookAuthor);
+
+		if ((book.getAuthors() == "") && (book.getTitle() != "")) {
+			listBooks = findBooksByTitle(book.getTitle());
+		} else if ((book.getTitle() == "") && (book.getAuthors() != "")) {
+			listBooks = findBooksByAuthor(book.getAuthors());
+		} else if ((book.getTitle() == "") && (book.getAuthors() == "")) {
+			listBooks = findAllBooks();
+		} else if ((book.getTitle() != "") && (book.getAuthors() != "")) {
+			listBooks = findBooksByTitle(book.getTitle());
+			listBooks = listBooks.stream().filter(b -> b.getAuthors() == (book.getAuthors()))
+					.collect(Collectors.toList());
+		}
+
 		return listBooks;
 	}
 }

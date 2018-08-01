@@ -34,11 +34,11 @@
                                     class="glyphicon-info-sign glyphicon"/></span> Details
                             </a>
                            
-                            <a th:href="@{'/books/delete?id='+${book.id}}"
-                               class="btn btn-primary"> <span
-                                    class="glyphicon-remove-sign glyphicon"/></span> Delete
-                            </a>
-                           
+                         <form th:method="delete" th:action="@{/books/bookDelete}">
+									<input type="hidden" name="id" th:value="${book.id}" />
+									<button class="glyphicon glyphicon-remove-circle" type="submit">Delete</button>
+								</form>
+                        
                         </p>
 
                     </div>
