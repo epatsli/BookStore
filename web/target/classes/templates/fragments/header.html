@@ -31,6 +31,12 @@
                             class="glyphicon glyphicon-log-in"></span> Login</a></li>
                             </div>
                 </ul>
+                
+                    <ul>
+    </ul>
+<div style="color:blue;text-align:right" sec:authorize="isAuthenticated()">
+   <h4>User: <span sec:authentication="name"></span> </h4>     
+</div>
             </div>
             <div>
             </div>

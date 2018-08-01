@@ -2,9 +2,8 @@ package pl.jstk.controller;
 
 import java.util.List;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,7 +39,8 @@ public class BookController {
 		return "book";
 	}
 
-	@RolesAllowed("ADMIN")
+	// @RolesAllowed('ADMIN')
+	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping(value = "books/bookDelete")
 	public String deleteBook(@RequestParam("id") Long id, Model model) {
 		bookService.deleteBook(id);
