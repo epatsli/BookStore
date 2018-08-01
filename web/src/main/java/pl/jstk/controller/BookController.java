@@ -68,10 +68,6 @@ public class BookController {
 	public String searchBook(@ModelAttribute("searchBook") BookTo book, Model model) {
 		List<BookTo> books = bookService.findBookByAuthorOrTitle(book);
 
-		if (books.isEmpty()) {
-			model.addAttribute(ModelConstants.INFO, "Sorry, we don't have this book.");
-		}
-
 		model.addAttribute(ModelConstants.bookList, books);
 		return "books";
 	}
