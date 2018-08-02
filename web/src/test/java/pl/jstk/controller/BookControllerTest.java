@@ -2,7 +2,6 @@ package pl.jstk.controller;
 
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -71,7 +70,7 @@ public class BookControllerTest {
 	@WithMockUser(username = "admin", roles = { "ADMIN" })
 	public void shouldAddBook() throws Exception {
 		// given
-		long bookId = 1L;
+		long bookId = 1;
 		String title = "title";
 		String authors = "authors";
 		BookStatus status = BookStatus.FREE;
@@ -93,8 +92,9 @@ public class BookControllerTest {
 	@Test
 	@WithMockUser(username = "admin", roles = { "ADMIN" })
 	public void shouldShowBook() throws Exception {
+
 		// given
-		long bookId = 1L;
+		long bookId = 1;
 		String title = "title";
 		String authors = "authors";
 		BookStatus status = BookStatus.FREE;
@@ -115,26 +115,10 @@ public class BookControllerTest {
 				.andExpect(model().attribute("book", hasProperty("authors", is(authors))))
 				.andExpect(model().attribute("book", hasProperty("status", is(status))));
 
-		verify(bookService, times(1)).findBookById(Mockito.anyLong());
+		verify(bookService).findBookById(Mockito.anyLong());
 		verifyNoMoreInteractions(bookService);
 	}
 
-	/*
-	 * @Test
-	 * 
-	 * @WithMockUser(username = "admin", roles = { "ADMIN" }) public void
-	 * shouldShowBooks() throws Exception {
-	 * 
-	 * // given List<BookTo> books = new ArrayList<>(); books.add(new BookTo());
-	 * books.add(new BookTo());
-	 * 
-	 * // when Mockito.when(bookService.findAllBooks()).thenReturn(books);
-	 * ResultActions resultActions = mockMvc.perform(get("/books"));
-	 * 
-	 * // then
-	 * resultActions.andExpect(status().isOk()).andExpect(view().name(ViewNames.
-	 * BOOKS)); }
-	 */
 	static String asJsonString(final Object obj) {
 		try {
 			return new ObjectMapper().writeValueAsString(obj);
