@@ -22,6 +22,9 @@ import org.springframework.security.config.annotation.web.servlet.configuration.
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -53,40 +56,40 @@ public class LoginControllerTest {
 	}
 
 	@Test
+	public void requiresAuthentication() throws Exception {
+		mvc = MockMvcBuilders.webAppContextSetup(context).addFilters(springSecurityFilterChain).build();
+		mvc.perform(get("/books/add")).andExpect(status().isMovedTemporarily());
+	}
+
+	@Test
 	public void requestProtectedUrlWithUser() throws Exception {
-		mvc.perform(get("/books/add").with(user("user")))
-				// Ensure we got past Security
-				.andExpect(status().isNotFound())
-				// Ensure it appears we are authenticated with user
+		mvc.perform(get("/greeting").with(user("user"))).andExpect(status().isNotFound())
 				.andExpect(authenticated().withUsername("user"));
 	}
 
 	@Test
 	public void requestProtectedUrlWithAdmin() throws Exception {
-		mvc.perform(get("/searchbooks").with(user("admin").password("pass").roles("USER", "ADMIN")))
-				// Ensure we got past Security
-				.andExpect(status().isNotFound())
-				// Ensure it appears we are authenticated with admin
-				.andExpect(authenticated().withUsername("admin"));
+		mvc.perform(get("/searchbooks")
+				.with(user("admin").password(passwordEncoder().encode("admin")).roles("USER", "ADMIN")))
+				.andExpect(status().isNotFound()).andExpect(authenticated().withUsername("admin"));
+	}
+
+	@Test(expected = UsernameNotFoundException.class)
+	public void requestErrorWhenProtectedUrlWithUserDetails() throws Exception {
+		userDetailsService.loadUserByUsername("inncorrect");
 	}
 
 	@Test
 	public void requestProtectedUrlWithUserDetails() throws Exception {
 		UserDetails userDetails = userDetailsService.loadUserByUsername("user");
-		mvc.perform(get("/").with(user(userDetails)))
-				// Ensure we got past Security
-				.andExpect(status().isNotFound())
-				// Ensure it appears we are authenticated with user
+		mvc.perform(get("/books/add").with(user(userDetails))).andExpect(status().isNotFound())
 				.andExpect(authenticated().withAuthenticationPrincipal(userDetails));
 	}
 
 	@Test
 	public void requestProtectedUrlWithAuthentication() throws Exception {
-		Authentication authentication = new TestingAuthenticationToken("test", "notused", "ROLE_USER");
-		mvc.perform(get("/searchbooks").with(authentication(authentication)))
-				// Ensure we got past Security
-				.andExpect(status().isNotFound())
-				// Ensure it appears we are authenticated with user
+		Authentication authentication = new TestingAuthenticationToken("user", "notused", "ROLE_USER");
+		mvc.perform(get("/searchbooks").with(authentication(authentication))).andExpect(status().isNotFound())
 				.andExpect(authenticated().withAuthentication(authentication));
 	}
 
@@ -111,5 +114,10 @@ public class LoginControllerTest {
 		public UserDetailsService userDetailsServiceBean() throws Exception {
 			return super.userDetailsServiceBean();
 		}
+	}
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 }
