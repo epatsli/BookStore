@@ -12,8 +12,7 @@
         <div class="container">
          <form action="#" th:action="@{/searchbooks}" th:object="${searchBook}" method="post" class="form-horizontal">
             <h1>Error</h1>
-            <p>${error}</p>
-            <h4>Sorry <span sec:authentication="name"> You have problem.</span> </h4>
+            <h2>Sorry, <span sec:authentication="name"></span>  can't remove this books.</h2>       
         </div>
     </div>
 </section>

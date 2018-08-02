@@ -3,10 +3,12 @@ package pl.jstk.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,6 +71,12 @@ public class BookController {
 		List<BookTo> books = bookService.findBookByAuthorOrTitle(book);
 		model.addAttribute(ModelConstants.bookList, books);
 		return "books";
+	}
+
+	@ExceptionHandler({ AccessDeniedException.class })
+	public String handleException(Model model) {
+		model.addAttribute("error", "Sorry, you can't remove this books");
+		return "403";
 	}
 
 }
