@@ -3,7 +3,7 @@ package pl.jstk.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,10 +37,7 @@ public class BookController {
 		return "book";
 	}
 
-	// @RolesAllowed("ADMIN")
-	// @PreAuthorize("hasRole('ADMIN')")
-	// @Secured("ADMIN")
-	@PreAuthorize("hasRole('ADMIN')")
+	@Secured("ROLE_ADMIN")
 	@DeleteMapping(value = "books/bookDelete")
 	public String deleteBook(@RequestParam("id") Long id, Model model) {
 		bookService.deleteBook(id);
@@ -70,7 +67,6 @@ public class BookController {
 	@PostMapping("/searchbooks")
 	public String searchBook(@ModelAttribute("searchBook") BookTo book, Model model) {
 		List<BookTo> books = bookService.findBookByAuthorOrTitle(book);
-
 		model.addAttribute(ModelConstants.bookList, books);
 		return "books";
 	}

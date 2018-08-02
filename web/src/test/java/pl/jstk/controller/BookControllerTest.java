@@ -1,34 +1,49 @@
 package pl.jstk.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import pl.jstk.service.impl.BookServiceImpl;
+import pl.jstk.constants.ViewNames;
+import pl.jstk.service.BookService;
+import pl.jstk.to.BookTo;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest
+@AutoConfigureMockMvc
+@ContextConfiguration
 public class BookControllerTest {
 
 	private MockMvc mockMvc;
 
-	@InjectMocks
-	private BookController bookController;
+	@Mock
+	BookService bookService;
 
-	@Spy
-	private BookServiceImpl bookService;
+	@InjectMocks
+	BookController bookController;
 
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -39,7 +54,8 @@ public class BookControllerTest {
 		MockitoAnnotations.initMocks(bookService);
 		Mockito.reset(bookService);
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-		ReflectionTestUtils.setField(bookController, "bookService", bookService);
+		// ReflectionTestUtils.setField(bookController, "bookService",
+		// bookService);
 	}
 
 	/*
@@ -61,4 +77,21 @@ public class BookControllerTest {
 		}
 	}
 
+	@Test
+	@WithMockUser(username = "admin", roles = { "ADMIN" })
+	public void shouldShowBooks() throws Exception {
+
+		// given
+		List<BookTo> books = new ArrayList<>();
+		books.add(new BookTo());
+		books.add(new BookTo());
+
+		// when
+		Mockito.when(bookService.findAllBooks()).thenReturn(books);
+		ResultActions resultActions = mockMvc.perform(get("/books"));
+
+		// then
+		resultActions.andExpect(status().isOk()).andExpect(view().name(ViewNames.BOOKS));
+
+	}
 }

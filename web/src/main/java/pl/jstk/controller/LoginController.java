@@ -25,7 +25,7 @@ public class LoginController {
 	public String handleException(Principal user, Model model) {
 		// model.addAttribute("error", "Sorry, you can't remove this books");
 		if (user != null) {
-			model.addAttribute("msg", "Hi " + user.getName() + ", you do not have permission to access this page!");
+			model.addAttribute("msg", "Hi " + user.getName() + ", you don't have permission to access this page!");
 		} else {
 			model.addAttribute("error", "Sorry, you can't remove this books");
 		}

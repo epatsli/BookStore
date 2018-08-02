@@ -5,6 +5,7 @@ import org.springframework.boot.web.servlet.filter.OrderedHiddenHttpMethodFilter
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebMvc
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
 	@Bean
@@ -40,11 +42,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter implements WebMvcCon
 		httpSecurity.authorizeRequests()
 				.antMatchers("/", "/books/**", "/books/book/*", "/webjars/**", "/css/*", "/img/*").permitAll()
 				.anyRequest().authenticated().and().formLogin().loginPage("/login").permitAll().and().logout()
-				.permitAll();
-
-		httpSecurity.authorizeRequests().antMatchers("/admin/**").access("hasRole('ADMIN')").and().formLogin()
-				.loginPage("/login").failureUrl("/login?error").usernameParameter("username")
-				.passwordParameter("password").and().exceptionHandling().accessDeniedPage("/403").and().logout()
+				.permitAll().and().exceptionHandling().accessDeniedPage("/403.html").and().logout()
 				.logoutSuccessUrl("/login?logout");
 
 		httpSecurity.csrf().disable();
